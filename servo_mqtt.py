@@ -1,11 +1,6 @@
-#
-#   Author: Ryan Auger
-#   Purpose:
-#       Control Servo Motor With MQTT
-#
-
 #Import SDK packages
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+##from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+from paho.mqtt import client as mqtt_client
 from time import sleep
 import RPi.GPIO as GPIO
 import sys
@@ -51,21 +46,21 @@ p = GPIO.PWM(GPIOPin, PulseFrequency)
 #                   in our MQTT system should get the message?
 # Part 4: CMD/CTRL - Helps separate different types of messages for code clarity
 #   - Parts 3&4 combine to form the "Channel"
-UUID = "0001"
-FLEET = "test"
-SUB_CHANNEL = "DT/CMD"
-PUB_CHANNEL = "MT/CMD"  # For sending messages back to a mobile device
-SubTopic = "%s/%s/%s" % (FLEET, UUID, SUB_CHANNEL)
-PubTopic = "%s/%s/%s" % (FLEET, UUID, PUB_CHANNEL)
+##UUID = "0001"
+##FLEET = "test"
+##SUB_CHANNEL = "DT/CMD"
+##PUB_CHANNEL = "MT/CMD"  # For sending messages back to a mobile device
+##SubTopic = "%s/%s/%s" % (FLEET, UUID, SUB_CHANNEL)
+##PubTopic = "%s/%s/%s" % (FLEET, UUID, PUB_CHANNEL)
 
 
 # AWS Authentication Credentials
 # https://github.com/aws/aws-iot-device-sdk-python 
-Host = "a9axurntd49mw.iot.us-east-1.amazonaws.com"
-Port = 8883
-CaCert = "/home/pi/repos/shower_head/certs/ca.crt"
-Key = "/home/pi/repos/shower_head/certs/priv.key"
-Cert = "/home/pi/repos/shower_head/certs/cert.crt"
+##Host = "a9axurntd49mw.iot.us-east-1.amazonaws.com"
+##Port = 8883
+##CaCert = "/home/pi/repos/shower_head/certs/ca.crt"
+##Key = "/home/pi/repos/shower_head/certs/priv.key"
+##Cert = "/home/pi/repos/shower_head/certs/cert.crt"
 
 
 # Used to control Motor on/off
@@ -74,14 +69,14 @@ Subscribing = 1
 
 
 #For certificate based connection
-myMQTTClient = AWSIoTMQTTClient(UUID)
+##myMQTTClient = AWSIoTMQTTClient(UUID)
 # For TLS mutual authentication
-myMQTTClient.configureEndpoint(Host, Port)
-myMQTTClient.configureCredentials(CaCert, Key, Cert)
-myMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
-myMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
-myMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
-myMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
+##myMQTTClient.configureEndpoint(Host, Port)
+##myMQTTClient.configureCredentials(CaCert, Key, Cert)
+##myMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
+##myMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
+##myMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
+##myMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
 
 # Called whenever a message is published to a topic that you are subscribed to
@@ -91,30 +86,30 @@ def cmd_callback ( Client, UserData, Message ):
     global State
 
     # Parse the MQTT Message
-    Topic = Message.topic                
+    Topic = Message.topic
     Payload = Message.payload.split(";")
     Command = Payload[0]
 
     print "Message: %s from Topic: %s" % (Payload, Topic)
-    
+
     #Handle Message
     if  (
         Command == "SHOWER ON" #Start Motor
-        ):    
+        ):
         print "Starting Motor"
-        p.start(PWM0) 
+        p.start(PWM0)
         sleep(1)
     elif(
-        Command == "ROTATE" and 
-        float(Payload[1]) <= 180 and 
-        float(Payload[1]) >= 0 
+        Command == "ROTATE" and
+        float(Payload[1]) <= 180 and
+        float(Payload[1]) >= 0
         ):
-        
+
         Angle=float(Payload[1])
         print "Setting Motor to Angle: %s " % Angle
-        Duty = (Angle / 180) * PWC + PWM0  
+        Duty = (Angle / 180) * PWC + PWM0
         GPIO.output(7, True)
-        p.ChangeDutyCycle(Duty) 
+        p.ChangeDutyCycle(Duty)
 
     elif Command == "SHOWER OFF":
         print "Returning Motor to Position Off Position"
@@ -125,7 +120,7 @@ def cleanup () :
     myMQTTClient.unsubscribe(SubTopic)
     myMQTTClient.disconnect()
     p.stop()
-    GPIO.cleanup() 
+    GPIO.cleanup()
 
 
 # Initialize connection and subscription
