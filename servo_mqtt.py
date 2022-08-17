@@ -36,7 +36,8 @@ def on_message(client, userdata, message):
 
 def on_disconnect(client, userdata, rc):
     if rc != 0:
-
+        print("Unexpected MQTT disconnection. Will auto-reconnect")
+        
 client = mqttClient.Client("Python")
 client.username_pw_set(user, password=password)
 client.tls_set(ca_certs=ca)
