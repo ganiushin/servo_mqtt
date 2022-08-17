@@ -31,7 +31,7 @@ def on_message(client, userdata, message):
     res = {x[0]:x[1] for x in [y.split("=") for y in rotate.split(";") if len(y)]}
     p1.ChangeDutyCycle(float(res["servo1"]))
     p2.ChangeDutyCycle(float(res["servo2"]))
-    sleep(2)
+    sleep(1)
     p1.ChangeDutyCycle(0)
     p2.ChangeDutyCycle(0)
 
