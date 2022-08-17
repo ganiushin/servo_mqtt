@@ -1,6 +1,5 @@
 # send to mqtt message servo1=1;servo2=12
 import paho.mqtt.client as mqttClient
-import time
 import ssl
 from time import sleep
 import RPi.GPIO as GPIO
