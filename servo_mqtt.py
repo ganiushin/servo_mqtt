@@ -20,11 +20,11 @@ p1.start(0)
 p2.start(0)
 
 host = "host"
-port = 8883
+port = "port"
 user = "user"
 password = "password"
 ca = "ca"
-sub_topic = "subscrube topic"
+sub_topic = "subscribe topic"
 
 def on_message(client, userdata, message):
     rotate = message.payload.decode()
