@@ -34,6 +34,8 @@ def on_message(client, userdata, message):
     p1.ChangeDutyCycle(0)
     p2.ChangeDutyCycle(0)
 
+def on_disconnect(client, userdata, rc):
+    if rc != 0:
 
 client = mqttClient.Client("Python")
 client.username_pw_set(user, password=password)
@@ -41,15 +43,16 @@ client.tls_set(ca_certs=ca)
 client.tls_insecure_set(True)
 client.connect(host, port, 60)
 client.loop_start()
+client.on_disconnect = on_disconnect
 client.subscribe(sub_topic)
 
 try:
     while True:
         client.on_message=on_message
+        sleep(0.1)
 
 except KeyboardInterrupt:
 
-    client.disconnect()
     client.loop_stop()
     p1.stop()
     p2.stop()
