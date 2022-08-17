@@ -5,8 +5,8 @@ from time import sleep
 import RPi.GPIO as GPIO
 import sys
 
-servo1_pin = 2
-servo2_pin = 14
+servo1_pin = 2 #6 - 10
+servo2_pin = 14 #1 - 12.5
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(servo1_pin, GPIO.OUT)
