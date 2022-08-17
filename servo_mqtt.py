@@ -1,4 +1,4 @@
-# send to mqtt topick=camera_rotate, message servo1=1;servo2=12
+# send to mqtt message servo1=1;servo2=12
 import paho.mqtt.client as mqttClient
 import time
 import ssl
