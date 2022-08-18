@@ -33,19 +33,25 @@ def on_message(client, userdata, message):
     sleep(1)
     p1.ChangeDutyCycle(0)
     p2.ChangeDutyCycle(0)
+    print('trace')
 
-def on_disconnect(client, userdata, rc):
-    if rc != 0:
-        print("Unexpected MQTT disconnection. Will auto-reconnect")
-        
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+
+    client.subscribe(
+            [
+                (sub_topic, 0),
+            ]
+    )
+
 client = mqttClient.Client("Python")
 client.username_pw_set(user, password=password)
 client.tls_set(ca_certs=ca)
 client.tls_insecure_set(True)
 client.connect(host, port, 60)
+client.on_connect = on_connect
 client.loop_start()
-client.on_disconnect = on_disconnect
-client.subscribe(sub_topic)
 
 try:
     while True:
