@@ -33,7 +33,6 @@ def on_message(client, userdata, message):
     sleep(0.1)
     p1.ChangeDutyCycle(0)
     p2.ChangeDutyCycle(0)
-    print('trace')
 
 
 def on_connect(client, userdata, flags, rc):
